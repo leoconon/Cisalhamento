@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cisalhamento</title>
+</head>
+<body>
+	<div id="teste"></div>
+	<div class="slidecontainer">
+  		<input type="range" min="-200" max="200" value="0" id="sliderx"><span id="valuex">0</span>
+  		<br/>
+  		<input type="range" min="-200" max="200" value="0" id="slidery"><span id="valuey">0</span>
+	</div>
+	<script type="text/javascript">
+		const divInicial = document.getElementById("teste");
+		const pixelSize = 5;
+		const h = 50; //Altura da forma
+		const w = 50; //Largura da forma
+		let fx = 0;  //Fator de cisalhamento no eixo x
+		let fy = 0;  //Fator de cisalhamento no eixo y
+
+		var planoy = [];
+
+		for (let y = 0; y <= h; y++) {
+			let planox = [];
+			for (let x = 0; x <= w; x++) {
+				const divNova = document.createElement("div");
+
+				divNova.id = `div${x}-${y}`;
+				divNova.style.backgroundColor = `rgb(0, 0, ${255 - y * 5})`;
+				divNova.style.width = `${pixelSize}px`;
+				divNova.style.height = `${pixelSize}px`;
+				divNova.style.position = "absolute";
+
+				document.body.insertBefore(divNova, divInicial);
+				planox[x] = divNova;
+			}
+			planoy[y] = planox;
+		}
+
+		cisalhamento(0)
+
+		function cisalhamento() {
+			for (let y = 0; y <= h; y++) {
+				for (let x = 0; x <= w; x++) {
+					const coordx = x + fx * y - w * fx / 2;
+					const coordy = y + fy * x - h * fy / 2;
+					planoy[y][x].style.top = `${200 + (coordy * pixelSize)}px`;
+					planoy[y][x].style.left = `${500 + (coordx * pixelSize)}px`;
+				}
+			}
+		}
+
+		let valuex = document.getElementById('valuex');
+		document.getElementById('sliderx').oninput = function() {
+			fx = this.value / 100;
+			valuex.innerHTML = fx;
+			cisalhamento();
+		}
+
+		let valuey = document.getElementById('valuey');
+		document.getElementById('slidery').oninput = function() {
+			fy = this.value / 100;
+			valuey.innerHTML = fy;
+			cisalhamento();
+		}
+	</script>
+</body>
+</html>
